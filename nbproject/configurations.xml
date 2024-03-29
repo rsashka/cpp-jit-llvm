@@ -9,8 +9,6 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Файлы заголовков"
                    projectFiles="true">
-      <itemPath>llvm_common.h</itemPath>
-      <itemPath>llvm_precomp.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Файлы ресурсов"
@@ -39,52 +37,26 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <standard>11</standard>
           <incDir>
             <pElem>/usr/local/include</pElem>
             <pElem>/usr/include/x86_64-linux-gnu/c++/10</pElem>
             <pElem>../..</pElem>
           </incDir>
-          <commandLine>`llvm-config-12 --cxxflags`</commandLine>
+          <commandLine>`llvm-config-18 --cxxflags` -fexceptions -fcxx-exceptions -std=c++20  -Wfloat-equal -Wundef  -Wwrite-strings -Wmissing-declarations  -Wno-trigraphs -Wno-invalid-source-encoding -stdlib=libstdc++ -Wno-error=unused-variable -Wno-error=unused-parameter -Wno-error=switch -fsanitize=undefined -fsanitize-trap=undefined   -gdwarf-4               -Wno-undefined-var-template -Wno-switch  -fvisibility=default  -ggdb -O0 -DGTEST_HAS_CXXABI_H_=0</commandLine>
           <preprocessorList>
-            <Elem>DEBUG</Elem>
+            <Elem>BUILD_DEBUG</Elem>
+            <Elem>ENABLE_LLVM_SHARED=1</Elem>
           </preprocessorList>
         </ccTool>
         <linkerTool>
           <output>cpp-jit-llvm</output>
           <linkerLibItems>
-            <linkerLibLibItem>c++</linkerLibLibItem>
-            <linkerLibLibItem>stdc++</linkerLibLibItem>
-            <linkerLibLibItem>clangTooling</linkerLibLibItem>
-            <linkerLibLibItem>clangFrontend</linkerLibLibItem>
-            <linkerLibLibItem>clangFrontendTool</linkerLibLibItem>
-            <linkerLibLibItem>clangSerialization</linkerLibLibItem>
-            <linkerLibLibItem>clangCodeGen</linkerLibLibItem>
-            <linkerLibLibItem>clangParse</linkerLibLibItem>
-            <linkerLibLibItem>clangSema</linkerLibLibItem>
-            <linkerLibLibItem>clangDriver</linkerLibLibItem>
-            <linkerLibLibItem>clangStaticAnalyzerFrontend</linkerLibLibItem>
-            <linkerLibLibItem>clangStaticAnalyzerCheckers</linkerLibLibItem>
-            <linkerLibLibItem>clangStaticAnalyzerCore</linkerLibLibItem>
-            <linkerLibLibItem>clangAnalysis</linkerLibLibItem>
-            <linkerLibLibItem>clangARCMigrate</linkerLibLibItem>
-            <linkerLibLibItem>clangRewrite</linkerLibLibItem>
-            <linkerLibLibItem>clangRewriteFrontend</linkerLibLibItem>
-            <linkerLibLibItem>clangEdit</linkerLibLibItem>
-            <linkerLibLibItem>clangAST</linkerLibLibItem>
-            <linkerLibLibItem>clangLex</linkerLibLibItem>
-            <linkerLibLibItem>clangBasic</linkerLibLibItem>
-            <linkerLibLibItem>clang</linkerLibLibItem>
-            <linkerLibLibItem>c++abi</linkerLibLibItem>
-            <linkerLibLibItem>LLVM-12</linkerLibLibItem>
+            <linkerLibStdlibItem>DynamicLinking</linkerLibStdlibItem>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
           </linkerLibItems>
-          <commandLine>`llvm-config-12 --libs --system-libs --ldflags`</commandLine>
+          <commandLine>`llvm-config-18 --link-static --system-libs --libs all` -fuse-ld=lld -g -fvisibility=default -Wl,--export-dynamic -Wl,--exclude-libs,ALL -lclang-cpp -rdynamic</commandLine>
         </linkerTool>
       </compileType>
-      <item path="llvm_common.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="llvm_precomp.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
@@ -108,10 +80,6 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="llvm_common.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="llvm_precomp.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>

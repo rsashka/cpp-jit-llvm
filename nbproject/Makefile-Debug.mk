@@ -14,11 +14,11 @@ GREP=grep
 NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
-CC=clang
-CCC=clang++
-CXX=clang++
+CC=clang-18
+CCC=clang++-18
+CXX=clang++-18
 FC=gfortran
-AS=as
+AS=lld-18
 
 # Macros
 CND_PLATFORM=CLang-Linux
@@ -42,8 +42,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=`llvm-config-12 --cxxflags` 
-CXXFLAGS=`llvm-config-12 --cxxflags` 
+CCFLAGS=`llvm-config-18 --cxxflags` -fexceptions -fcxx-exceptions -std=c++20  -Wfloat-equal -Wundef  -Wwrite-strings -Wmissing-declarations  -Wno-trigraphs -Wno-invalid-source-encoding -stdlib=libstdc++ -Wno-error=unused-variable -Wno-error=unused-parameter -Wno-error=switch -fsanitize=undefined -fsanitize-trap=undefined   -gdwarf-4               -Wno-undefined-var-template -Wno-switch  -fvisibility=default  -ggdb -O0 -DGTEST_HAS_CXXABI_H_=0 
+CXXFLAGS=`llvm-config-18 --cxxflags` -fexceptions -fcxx-exceptions -std=c++20  -Wfloat-equal -Wundef  -Wwrite-strings -Wmissing-declarations  -Wno-trigraphs -Wno-invalid-source-encoding -stdlib=libstdc++ -Wno-error=unused-variable -Wno-error=unused-parameter -Wno-error=switch -fsanitize=undefined -fsanitize-trap=undefined   -gdwarf-4               -Wno-undefined-var-template -Wno-switch  -fvisibility=default  -ggdb -O0 -DGTEST_HAS_CXXABI_H_=0 
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -52,19 +52,19 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-lc++ -lstdc++ -lclangTooling -lclangFrontend -lclangFrontendTool -lclangSerialization -lclangCodeGen -lclangParse -lclangSema -lclangDriver -lclangStaticAnalyzerFrontend -lclangStaticAnalyzerCheckers -lclangStaticAnalyzerCore -lclangAnalysis -lclangARCMigrate -lclangRewrite -lclangRewriteFrontend -lclangEdit -lclangAST -lclangLex -lclangBasic -lclang -lc++abi -lLLVM-12
+LDLIBSOPTIONS=-ldl -lpthread
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
 	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk cpp-jit-llvm
 
 cpp-jit-llvm: ${OBJECTFILES}
-	${LINK.cc} -o cpp-jit-llvm ${OBJECTFILES} ${LDLIBSOPTIONS} `llvm-config-12 --libs --system-libs --ldflags`
+	${LINK.cc} -o cpp-jit-llvm ${OBJECTFILES} ${LDLIBSOPTIONS} `llvm-config-18 --link-static --system-libs --libs all` -fuse-ld=lld -g -fvisibility=default -Wl,--export-dynamic -Wl,--exclude-libs,ALL -lclang-cpp -rdynamic
 
 ${OBJECTDIR}/main.o: main.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -DDEBUG -I/usr/local/include -I/usr/include/x86_64-linux-gnu/c++/10 -I../.. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -DBUILD_DEBUG -DENABLE_LLVM_SHARED=1 -I/usr/local/include -I/usr/include/x86_64-linux-gnu/c++/10 -I../.. -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:

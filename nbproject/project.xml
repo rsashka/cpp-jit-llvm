@@ -6,8 +6,8 @@
             <name>cpp-jit-llvm</name>
             <c-extensions/>
             <cpp-extensions>cpp</cpp-extensions>
-            <header-extensions>h</header-extensions>
-            <sourceEncoding>windows-1251</sourceEncoding>
+            <header-extensions/>
+            <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList/>
             <confList>
