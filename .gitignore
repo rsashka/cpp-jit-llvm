@@ -1,4 +1,41 @@
-cpp-jit-llvm
+.vscode
+TEMP
+doxygen/*
+# site/public
+# site/public/**
+output/*
+**/*.pt
+contrib/*
+**/.obsidian
+**/CMakeFiles
+**/CMakeCache.txt
+**/*.cmake
+**/newlang-unit-tests
+**/newlang-unit-tests.exe
+**/nlc.exe
+**/**tar.xz
+**/DartConfiguration.tcl
+TAG
+
+**/*.pcm
+**/*.bc
+**/*.data
+**/*.s
+
+**/*.i
+**/*.vcxproj.filters
+**/*.vcxproj.user
+
+**/syntax_help*.cpp
+**/newlang_doc.txt
+**/version.*
+docs/syntax.txt
+output
+**/*temp*
+**/tmp
+**/.vs
+.history
+
 
 # Binaries
 *.7z
@@ -22,6 +59,8 @@ cpp-jit-llvm
 **/nbdist/
 **/nbactions.xml
 **/nb-configuration.xml
+**/Debug*
+**/Release*
 
 # Misc
 *.swp
@@ -190,12 +229,10 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
-develop-eggs/
 dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -300,9 +337,6 @@ venv.bak/
 
 # Rope project settings
 .ropeproject
-
-# mkdocs documentation
-/site
 
 # mypy
 .mypy_cache/
