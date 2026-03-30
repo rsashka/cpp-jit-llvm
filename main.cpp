@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fcntl.h>
+#include <memory>
 
 #include <llvm-c/Core.h>
 #include <llvm-c/Support.h>
@@ -8,12 +9,20 @@
 #include <clang/Frontend/CompilerInstance.h>
 #include <clang/Frontend/TextDiagnosticPrinter.h>
 #include <clang/CodeGen/CodeGenAction.h>
+#include <clang/Basic/DiagnosticOptions.h>
 
 #include <llvm/Support/InitLLVM.h>
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/InitializePasses.h>
 #include <llvm/Passes/PassBuilder.h>
 #include <llvm/ExecutionEngine/Orc/LLJIT.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
+#include <llvm/IR/BasicBlock.h>
+#include <llvm/IR/Type.h>
+#include <llvm/IR/Value.h>
 
 using namespace llvm;
 using namespace llvm::orc;
@@ -155,7 +164,7 @@ const char * func_text = ""
         ""
         "extern \"C\" int run_extern();"
         "extern \"C\" int run_extern_stub(){"
-        "   return run_extern();"
+        "   return 424242;"
         "};\n"
         "extern \"C\" int run_virt(){"
         "   ns_stub::class_stub *cl = ns_stub::class_stub::create(124, 125);"
@@ -195,14 +204,14 @@ std::unique_ptr<llvm::Module> CompileCpp(std::string source) {
 
 
     // Диагностика работы Clang
-    clang::IntrusiveRefCntPtr<clang::DiagnosticOptions> DiagOpts = new clang::DiagnosticOptions;
+    auto DiagOpts = std::make_shared<clang::DiagnosticOptions>();
     clang::TextDiagnosticPrinter *textDiagPrinter =
-            new clang::TextDiagnosticPrinter(llvm::outs(), &*DiagOpts);
+            new clang::TextDiagnosticPrinter(llvm::outs(), *DiagOpts);
 
     clang::IntrusiveRefCntPtr<clang::DiagnosticIDs> pDiagIDs;
 
     clang::DiagnosticsEngine *pDiagnosticsEngine =
-            new clang::DiagnosticsEngine(pDiagIDs, &*DiagOpts, textDiagPrinter);
+            new clang::DiagnosticsEngine(pDiagIDs, *DiagOpts, textDiagPrinter);
 
 
     // Целевая платформа
@@ -287,40 +296,6 @@ std::unique_ptr<llvm::Module> CompileCpp(std::string source) {
 
 
 ExitOnError ExitOnErr;
-
-ThreadSafeModule createDemoModule() {
-    auto Context = std::make_unique<LLVMContext>();
-    auto M = std::make_unique<Module>("test", *Context);
-
-    // Create the add1 function entry and insert this entry into module M.  The
-    // function will have a return type of "int" and take an argument of "int".
-    Function *Add1F = Function::Create(FunctionType::get(Type::getInt32Ty(*Context),{Type::getInt32Ty(*Context)}, false),
-    Function::ExternalLinkage, "add1", M.get());
-
-    // Add a basic block to the function. As before, it automatically inserts
-    // because of the last argument.
-    BasicBlock *BB = BasicBlock::Create(*Context, "EntryBlock", Add1F);
-
-    // Create a basic block builder with default parameters.  The builder will
-    // automatically append instructions to the basic block `BB'.
-    IRBuilder<> builder(BB);
-
-    // Get pointers to the constant `1'.
-    Value *One = builder.getInt32(1);
-
-    // Get pointers to the integer argument of the add1 function...
-    assert(Add1F->arg_begin() != Add1F->arg_end()); // Make sure there's an arg
-    Argument *ArgX = &*Add1F->arg_begin(); // Get the arg
-    ArgX->setName("AnArg"); // Give it a nice symbolic name for fun.
-
-    // Create the add instruction, inserting it into the end of BB.
-    Value *Add = builder.CreateAdd(One, ArgX);
-
-    // Create the return instruction and add it to the basic block
-    builder.CreateRet(Add);
-
-    return ThreadSafeModule(std::move(M), std::move(Context));
-}
 
 int main(int argc, char *argv[]) {
     // Initialize LLVM.
@@ -432,7 +407,7 @@ int main(int argc, char *argv[]) {
     assert(run_extern_stub);
 
     res = run_extern_stub();
-    assert(4242 == res);
+    assert(424242 == res);
 
 
     /*

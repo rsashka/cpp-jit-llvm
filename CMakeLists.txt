@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
 
+
+set(LLVM_VERSION "22")
+
 # Установка компилятора Clang
-set(CMAKE_C_COMPILER "clang-18")
-set(CMAKE_CXX_COMPILER "clang++-18")
+set(CMAKE_C_COMPILER "clang-${LLVM_VERSION}")
+set(CMAKE_CXX_COMPILER "clang++-${LLVM_VERSION}")
 
 project(cpp-jit-llvm CXX)
 
@@ -11,17 +14,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Прямое указание путей LLVM и Clang
-set(LLVM_DIR "/usr/lib/llvm-18")
+set(LLVM_DIR "/usr/lib/llvm-${LLVM_VERSION}")
 set(LLVM_INCLUDE_DIR "${LLVM_DIR}/include")
 set(LLVM_LIBRARY_DIR "${LLVM_DIR}/lib")
 
-# Получение версии LLVM через llvm-config
-execute_process(
-    COMMAND llvm-config-18 --version
-    OUTPUT_VARIABLE LLVM_VERSION
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-message(STATUS "Found LLVM ${LLVM_VERSION}")
 message(STATUS "Using LLVM in: ${LLVM_DIR}")
 
 # Добавление путей заголовочных файлов LLVM и Clang
@@ -32,7 +28,7 @@ add_definitions(-DBUILD_DEBUG -DENABLE_LLVM_SHARED=1)
 
 # Получение флагов компиляции LLVM через llvm-config
 execute_process(
-    COMMAND llvm-config-18 --cxxflags
+    COMMAND llvm-config-${LLVM_VERSION} --cxxflags
     OUTPUT_VARIABLE LLVM_CXX_FLAGS
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
@@ -60,13 +56,13 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 # Получение библиотек LLVM через llvm-config
 execute_process(
-    COMMAND llvm-config-18 --libs all
+    COMMAND llvm-config-${LLVM_VERSION} --libs all
     OUTPUT_VARIABLE LLVM_LIBS
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
 execute_process(
-    COMMAND llvm-config-18 --system-libs
+    COMMAND llvm-config-${LLVM_VERSION} --system-libs
     OUTPUT_VARIABLE LLVM_SYSTEM_LIBS
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
